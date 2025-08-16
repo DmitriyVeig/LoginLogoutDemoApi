@@ -1,11 +1,8 @@
+const path = require("path");
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+
 const app = require("./app");
 const logger = require("./utils/logger");
-const path = require("path");
-const dotenv = require("dotenv");
-
-const envPath = path.resolve(__dirname, "../.env");
-
-dotenv.config({ path: envPath });
 
 const PORT = process.env.PORT;
 
