@@ -2,12 +2,14 @@ const express = require("express");
 const logger = require("./utils/logger");
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
+const swaggerDocument = YAML.load("./src/docs/swagger.yaml");
+const userRoutes = require("./routes/user.routes");
 
 const app = express();
 
 app.use(express.json())
 
-const swaggerDocument = YAML.load("./src/docs/swagger.yaml");
+app.use("/api/users", userRoutes)
 
 app.get("/", (req, res) => {
     res.send(".");
