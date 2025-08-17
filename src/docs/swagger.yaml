@@ -1,0 +1,19 @@
+openapi: 3.0.0
+servers:
+  - description: API for my small pet project called LoginLogoutDemo
+    url: still none
+info:
+  version: "1.0.0"
+  title: LoginLogoutDemoApi
+  description: API for my small pet project called LoginLogoutDemo
+paths:
+  /:
+    get:
+      responses:
+        200:
+          description: greeting response
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Hello world!"
