@@ -1,5 +1,4 @@
 const express = require("express");
-const logger = require("./utils/logger");
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 const swaggerDocument = YAML.load("./src/docs/swagger.yaml");
