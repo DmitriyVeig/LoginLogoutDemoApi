@@ -2,3 +2,4 @@
 .env
 /logs
 /help
+/node_modules
