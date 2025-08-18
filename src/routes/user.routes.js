@@ -3,9 +3,10 @@ const { register, login, users, sessions } = require("../controllers/user.contro
 
 const router = express.Router();
 
-router.post("/api/users/register", register);
-router.post("/api/users/login", login);
-router.post("/api/users", users);
-router.post("/api/users/sessions", sessions);
+router.post("/users/register", register);
+router.post("/users/login", login);
+
+router.get("/users", users);
+router.get("/users/sessions", sessions);
 
 module.exports = router;
