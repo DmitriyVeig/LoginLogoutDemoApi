@@ -1,11 +1,8 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const path = require("path");
 const pool = require("../config/db");
 const logger = require("../utils/logger");
+const { hashPassword, comparePassword, generateToken } = require("../utils/jwt");
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
-
-const JWT_SECRET = process.env.JWT_SECRET;
 
 async function register(req, res) {
     const { username, password } = req.body;
@@ -16,7 +13,7 @@ async function register(req, res) {
             'SELECT id FROM users WHERE username = $1', [username]);
         if (existingUser.rowCount > 0)
             return res.status(409).json({ error: "Username already exists" });
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await hashPassword(password);
         const result = await pool.query(
             'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id',
             [username, hashedPassword]
@@ -38,7 +35,7 @@ async function login(req, res) {
         if (userResult.rowCount === 0)
             return res.status(401).json({ error: "Invalid username or password" });
         const user = userResult.rows[0];
-        const match = await bcrypt.compare(password, user.password);
+        const match = await comparePassword(password, user.password);
         if (!match)
             return res.status(401).json({ error: "Invalid username or password" });
         const sessionResult = await pool.query(
@@ -48,8 +45,8 @@ async function login(req, res) {
             [user.id, SESSION_TTL]
         );
         const sessionId = sessionResult.rows[0].session_id;
-        const token = jwt.sign(
-            { userId: user.id, sessionId }, JWT_SECRET, { expiresIn: "1h" });
+        const token = generateToken(
+            { userId: user.id, sessionId }, "1h" );
         res.json({ token });
     } catch (err) {
         logger.error(err);
@@ -78,7 +75,7 @@ async function refresh(req, res) {
             'UPDATE sessions SET expires_at = now() + $1::interval WHERE session_id = $2 AND revoked_at IS NULL',
             [SESSION_TTL, sessionId]
         );
-        const token = jwt.sign({ userId, sessionId }, JWT_SECRET, { expiresIn: "1h" });
+        const token = generateToken({ userId, sessionId }, "1h");
         res.json({ token });
     } catch (err) {
         logger.error(err);
