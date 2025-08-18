@@ -1,15 +1,16 @@
 openapi: 3.0.0
-servers:
-  - url: 'http://localhost:3000'
-    description: API for my small pet project called LoginLogoutDemo
-  - url: 'http://localhost:3000'
-    description: Website for my project
 info:
-  version: 1.0.0
+  version: "1.0.0"
   title: LoginLogoutDemoApi
   description: API for my small pet project called LoginLogoutDemo
   contact:
     name: Dmitriy
+servers:
+  - url: 'http://localhost:3000'
+    description: Local development server
+tags:
+  - name: Users
+    description: User authentication and session management
 paths:
   /api/users/register:
     post:
@@ -50,42 +51,17 @@ paths:
                     example: 550e8400-e29b-41d4-a716-446655440000
         '400':
           description: Missing username or password
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Username and password required
         '409':
           description: Username already exists
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Username already exists
         '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    x-stoplight:
-                      id: f55pnq15tlz07
+          description: Internal server error
+
   /api/users/login:
     post:
       summary: Login user and get JWT token
       tags:
         - Users
       requestBody:
-        description: Username and password for login
         required: true
         content:
           application/json:
@@ -103,7 +79,7 @@ paths:
                   example: MySecretPassword
       responses:
         '200':
-          description: 'Successful login, returns JWT token'
+          description: Successful login, returns JWT token
           content:
             application/json:
               schema:
@@ -114,126 +90,96 @@ paths:
                     example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         '400':
           description: Missing username or password
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Username and password required
         '401':
           description: Invalid username or password
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Invalid username or password
         '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    x-stoplight:
-                      id: r9zu93kt9sc5l
-      parameters: []
-  /api/users:
-    get:
-      summary: Get all users
+          description: Internal server error
+
+  /api/users/logout:
+    post:
+      summary: Logout current session
       tags:
         - Users
+      security:
+        - bearerAuth: []
       responses:
         '200':
-          description: Successfully got users
+          description: Successfully logged out
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Logged out successfully
+        '401':
+          description: Invalid or expired token
+        '500':
+          description: Internal server error
+
+  /api/users/refresh:
+    post:
+      summary: Refresh current session token
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Returns a new JWT token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: Invalid or expired token
+        '500':
+          description: Internal server error
+
+  /api/users/sessions:
+    get:
+      summary: Get all sessions for current user
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of sessions
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  x-stoplight:
-                    id: uj1qiy0xamza6
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                      x-stoplight:
-                        id: at6q5mh58j2fz
-                      format: uuid
-                      example: 550e8400-e29b-41d4-a716-446655440000
-                    username:
-                      type: string
-                      x-stoplight:
-                        id: 8lmrgln8zsxec
-                      example: dmitriy123
-                    password:
-                      type: string
-                      x-stoplight:
-                        id: hv48ohum32zgq
-                      example: MySecretPassword
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    x-stoplight:
-                      id: 1ogtlhps5m4wa
-      operationId: ''
-  /api/sessions:
-    get:
-      summary: Get all sessions
-      tags:
-        - Users
-      responses:
-        '200':
-          description: Successfully got sessions
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  x-stoplight:
-                    id: xtw8337y978l2
                   type: object
                   properties:
                     session_id:
                       type: string
-                      x-stoplight:
-                        id: g354rz3s0hxnh
                       format: uuid
-                      example: 550e8400-e29b-41d4-a716-446655440000
                     user_id:
                       type: string
-                      x-stoplight:
-                        id: usumak3pbgbtx
                       format: uuid
-                      example: 550e8400-e29b-41d4-a716-446655440000
                     created_at:
                       type: string
                       format: date-time
                     expires_at:
                       type: string
-                      x-stoplight:
-                        id: yglbc99yyck0k
                       format: date-time
+                    revoked_at:
+                      type: string
+                      format: date-time
+        '401':
+          description: Invalid or expired token
         '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    x-stoplight:
-                      id: kggk5j0ssfh2q
+          description: Internal server error
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
