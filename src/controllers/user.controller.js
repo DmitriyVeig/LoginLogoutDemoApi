@@ -2,9 +2,34 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const path = require("path");
 const pool = require("../config/db");
+const logger = require("../utils/logger");
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 
 const JWT_SECRET = process.env.JWT_SECRET;
+
+async function users(req, res) {
+    try {
+        const result = await pool.query(
+            'SELECT * FROM users',
+        );
+        res.status(200).json(result.rows);
+    } catch (err) {
+        logger.error(err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+async function sessions(req, res) {
+    try {
+        const result = await pool.query(
+            'SELECT * FROM sessions',
+        );
+        res.status(200).json(result.rows);
+    } catch (err) {
+        logger.error(err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
 
 async function register(req, res) {
     const { username, password } = req.body;
@@ -23,7 +48,7 @@ async function register(req, res) {
         if (err.code === "23505") {
             return res.status(409).json({ error: "Username already exists" });
         }
-        console.error(err);
+        logger.error(err);
         res.status(500).json({ error: "Internal server error" });
     }
 }
@@ -56,9 +81,9 @@ async function login(req, res) {
         });
         res.json({ token });
     } catch (err) {
-        console.error(err);
+        logger.error(err);
         res.status(500).json({ error: "Internal server error" });
     }
 }
 
-module.exports = { register, login };
+module.exports = { register, login, users, sessions };

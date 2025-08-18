@@ -14,5 +14,5 @@ pool.connect(undefined)
     .then(() =>
         logger.info("Connected to DB"))
     .catch((err) =>
-        logger.info("Error: '" + err + "' while trying to connect to DB"));
+        logger.error("Error: '" + err + "' while trying to connect to DB"));
 module.exports = pool;
