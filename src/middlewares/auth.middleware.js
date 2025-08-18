@@ -1,9 +1,6 @@
-const jwt = require("jsonwebtoken");
 const pool = require("../config/db");
 const logger = require("../utils/logger");
 const { verifyToken } = require("../utils/jwt");
-
-const JWT_SECRET = process.env.JWT_SECRET;
 
 async function authenticate(req, res, next) {
     try {
