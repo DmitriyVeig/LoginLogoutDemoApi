@@ -142,7 +142,7 @@ paths:
 
   /api/users/sessions:
     get:
-      summary: Get all sessions for current user
+      summary: Get all active sessions for current user
       tags:
         - Users
       security:
@@ -157,21 +157,9 @@ paths:
                 items:
                   type: object
                   properties:
-                    session_id:
+                    sessionId:
                       type: string
-                      format: uuid
-                    user_id:
-                      type: string
-                      format: uuid
-                    created_at:
-                      type: string
-                      format: date-time
-                    expires_at:
-                      type: string
-                      format: date-time
-                    revoked_at:
-                      type: string
-                      format: date-time
+                      example: abc123-uuid
         '401':
           description: Invalid or expired token
         '500':
