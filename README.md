@@ -1,2 +1,2 @@
-# LoginLogoutDemo
-A small pet project
+# LoginLogoutDemoApi
+Api for a small pet project
