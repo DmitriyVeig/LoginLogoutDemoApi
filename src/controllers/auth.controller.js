@@ -3,6 +3,7 @@ const pool = require("../config/db");
 const logger = require("../utils/logger");
 const { hashPassword, comparePassword, generateToken } = require("../utils/jwt");
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+const SESSION_TTL = process.env.SESSION_TTL;
 
 async function register(req, res) {
     const { username, password } = req.body;
