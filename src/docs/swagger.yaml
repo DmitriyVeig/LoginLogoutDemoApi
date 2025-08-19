@@ -165,7 +165,6 @@ paths:
         '500':
           description: Internal server error
 
-  # --- Работа с пользователями ---
   /api/users:
     get:
       summary: Get all users
