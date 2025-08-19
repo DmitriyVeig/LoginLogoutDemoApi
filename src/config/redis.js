@@ -1,7 +1,7 @@
 const Redis = require("ioredis");
 const path = require("path");
 const logger = require("../utils/logger");
-require("dotenv").config({ path: path.resolve(__dirname, "../../.env") });
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env'), debug: false });
 
 const redis = new Redis({
     host: process.env.REDIS_HOST,

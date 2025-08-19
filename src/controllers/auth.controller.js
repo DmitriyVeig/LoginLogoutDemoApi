@@ -3,7 +3,7 @@ const pool = require("../config/db");
 const redis = require("../config/redis");
 const logger = require("../utils/logger");
 const { hashPassword, comparePassword, generateToken } = require("../utils/jwt");
-require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env'), debug: false });
 const SESSION_TTL = parseInt(process.env.SESSION_TTL || "3600", 10);
 
 async function register(req, res) {
