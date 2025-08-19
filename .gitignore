@@ -3,3 +3,4 @@
 /logs
 /help
 /node_modules
+/redis_data
