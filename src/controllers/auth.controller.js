@@ -84,16 +84,12 @@ async function refresh(req, res) {
 
 async function getSessions(req, res) {
     try {
-        const { userId } = req.user;
         const keys = await redis.keys("session:*");
         const sessions = [];
         for (const key of keys) {
             const data = await redis.get(key);
             if (data) {
-                const parsed = JSON.parse(data);
-                if (parsed.userId === userId) {
-                    sessions.push({ sessionId: key.split(":")[1] });
-                }
+                sessions.push({ sessionId: key.split(":")[1], ...JSON.parse(data) });
             }
         }
         res.json(sessions);
