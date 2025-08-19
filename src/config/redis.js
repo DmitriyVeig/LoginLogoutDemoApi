@@ -1,5 +1,6 @@
 const Redis = require("ioredis");
 const path = require("path");
+const logger = require("../utils/logger");
 require("dotenv").config({ path: path.resolve(__dirname, "../../.env") });
 
 const redis = new Redis({
@@ -9,11 +10,11 @@ const redis = new Redis({
 });
 
 redis.on("connect", () => {
-    console.log("Connected to Redis");
+    logger.info("Connected to Redis");
 });
 
 redis.on("error", (err) => {
-    console.error("Redis error:", err);
+    logger.error("Redis error:", err);
 });
 
 module.exports = redis;
