@@ -10,9 +10,9 @@ servers:
     description: Local development server
 tags:
   - name: Users
-    description: User authentication and session management
+    description: User management and authentication
 paths:
-  /api/users/register:
+  /api/users/auth/register:
     post:
       summary: Register a new user
       tags:
@@ -56,7 +56,7 @@ paths:
         '500':
           description: Internal server error
 
-  /api/users/login:
+  /api/users/auth/login:
     post:
       summary: Login user and get JWT token
       tags:
@@ -95,7 +95,7 @@ paths:
         '500':
           description: Internal server error
 
-  /api/users/logout:
+  /api/users/auth/logout:
     post:
       summary: Logout current session
       tags:
@@ -118,7 +118,7 @@ paths:
         '500':
           description: Internal server error
 
-  /api/users/refresh:
+  /api/users/auth/refresh:
     post:
       summary: Refresh current session token
       tags:
@@ -140,7 +140,7 @@ paths:
         '500':
           description: Internal server error
 
-  /api/users/sessions:
+  /api/users/auth/sessions:
     get:
       summary: Get all active sessions for current user
       tags:
@@ -160,6 +160,35 @@ paths:
                     sessionId:
                       type: string
                       example: abc123-uuid
+        '401':
+          description: Invalid or expired token
+        '500':
+          description: Internal server error
+
+  # --- Работа с пользователями ---
+  /api/users:
+    get:
+      summary: Get all users
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of all users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: 550e8400-e29b-41d4-a716-446655440000
+                    username:
+                      type: string
+                      example: dmitriy123
         '401':
           description: Invalid or expired token
         '500':
